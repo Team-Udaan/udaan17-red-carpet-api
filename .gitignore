@@ -1,2 +1,8 @@
 # IDEA
 .idea
+
+# NODE
+node_modules
+
+# CONFIG
+config.json

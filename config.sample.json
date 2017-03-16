@@ -1,0 +1,12 @@
+{
+  "connection": {
+    "host": "<host>",
+    "user": "<user>",
+    "password": "<password>",
+    "database": "<database>"
+  },
+  "app": {
+    "port": 8000
+  },
+  "secret": "<secret>"
+}

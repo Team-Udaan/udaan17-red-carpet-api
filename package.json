@@ -4,7 +4,8 @@
   "description": "Udaan17 Red Carpet API",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,10 @@
   "bugs": {
     "url": "https://github.com/Team-Udaan/udaan17-red-carpet-api/issues"
   },
-  "homepage": "https://github.com/Team-Udaan/udaan17-red-carpet-api#readme"
+  "homepage": "https://github.com/Team-Udaan/udaan17-red-carpet-api#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "mysql": "^2.13.0"
+  }
 }
