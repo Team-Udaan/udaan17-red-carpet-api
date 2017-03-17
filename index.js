@@ -88,9 +88,13 @@ app.post('/vote', authenticate, validateForm, (req, res) => {
     form.persona.female,
     form.artist.male,
     form.artist.female
-  ], (error) => {
-    if (!error) voted.push(req.body.enroll)
-    res.json({ok: !error, error: error ? error : undefined})
+  ], error => {
+    if (error) {
+      res.json({ok: false, error: 'Already voted.'})
+      return
+    }
+    voted.push(req.body.enroll)
+    res.json({ok: true})
     io.sockets.emit('vote', form)
   })
 })
