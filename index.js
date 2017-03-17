@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const crypto = require('crypto')
 const mysql = require('mysql')
 
@@ -8,6 +9,7 @@ const voted = []
 const connection = mysql.createConnection(config.connection)
 const app = express()
 
+app.use(cors())
 app.use(bodyParser.json())
 
 const authenticate = (req, res, next) => {
@@ -50,6 +52,8 @@ const validateForm = (req, res, next) => {
   }
   next()
 }
+
+app.get('/data.min.js', express.static(__dirname + '/data'))
 
 app.post('/login', authenticate, (_, res) => {
   res.json({ok: true})

@@ -6,3 +6,6 @@ node_modules
 
 # CONFIG
 config.json
+
+# DATA
+data
