@@ -12,9 +12,10 @@ const connection = mysql.createConnection(config.connection)
 const app = express()
 const server = https.createServer({
   key: fs.readFileSync(config.server.key),
-  cert: fs.readFileSync(config.server.cert)
+  cert: fs.readFileSync(config.server.cert),
+  ca: fs.readFileSync(config.server.ca)
 }, app)
-const io = require('socket.io')(server);
+const io = require('socket.io')(server)
 
 app.use(cors())
 app.use(bodyParser.json())
@@ -89,7 +90,7 @@ app.post('/vote', authenticate, validateForm, (req, res) => {
   ], (error) => {
     if (!error) voted.push(req.body.enroll)
     res.json({ok: !error, error: error ? error : undefined})
-    io.sockets.emit('vote', form);
+    io.sockets.emit('vote', form)
   })
 })
 
