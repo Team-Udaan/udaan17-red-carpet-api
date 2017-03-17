@@ -6,14 +6,15 @@ const crypto = require('crypto')
 const mysql = require('mysql')
 const fs = require('fs')
 const config = require('./config.json')
+const path = require('path')
 
 const voted = []
 const connection = mysql.createConnection(config.connection)
 const app = express()
 const server = https.createServer({
-  key: fs.readFileSync(config.server.key),
-  cert: fs.readFileSync(config.server.cert),
-  ca: fs.readFileSync(config.server.ca)
+  key: fs.readFileSync(path.join(__dirname, config.server.key)),
+  cert: fs.readFileSync(path.join(__dirname, config.server.cert)),
+  ca: fs.readFileSync(path.join(__dirname, config.server.ca))
 }, app)
 const io = require('socket.io')(server)
 
