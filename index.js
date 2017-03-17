@@ -1,18 +1,31 @@
+const https = require('https')
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const crypto = require('crypto')
 const mysql = require('mysql')
-
+const fs = require('fs')
 const config = require('./config.json')
+
 const voted = []
 const connection = mysql.createConnection(config.connection)
 const app = express()
+const server = https.createServer({
+  key: fs.readFileSync(config.server.key),
+  cert: fs.readFileSync(config.server.cert)
+}, app)
+const io = require('socket.io')(server);
 
 app.use(cors())
 app.use(bodyParser.json())
 
 const authenticate = (req, res, next) => {
+
+  // Bypass Login
+  if (config.bypassLogin) {
+    next()
+    return
+  }
 
   // Missing credentials
   if (!req.body.enroll || !req.body.key) {
@@ -76,6 +89,7 @@ app.post('/vote', authenticate, validateForm, (req, res) => {
   ], (error) => {
     if (!error) voted.push(req.body.enroll)
     res.json({ok: !error, error: error ? error : undefined})
+    io.sockets.emit('vote', form);
   })
 })
 
@@ -90,8 +104,33 @@ connection.connect(() => {
     results.forEach(result => {
       voted.push(result.enrollment_no)
     })
-    app.listen(config.app.port, () => {
-      console.log(`Serving from ${config.app.port}`)
+    server.listen(config.server.port, () => {
+      console.log(`Serving from ${config.server.port}`)
     })
+  })
+})
+
+io.on('connection', socket => {
+  connection.query('select * from votes', (_, results) => {
+    socket.emit('votes', results.reduce((votes, vote) => {
+      votes.risingStar[vote.rising_star] = (votes.risingStar[vote.rising_star] || 0) + 1
+      votes.sportsIcon[vote.sports_icon] = (votes.sportsIcon[vote.sports_icon] || 0) + 1
+      votes.face.male[vote.face_male] = (votes.face.male[vote.face_male] || 0) + 1
+      votes.face.female[vote.face_female] = (votes.face.female[vote.face_female] || 0) + 1
+      votes.styleIcon.male[vote.style_icon_male] = (votes.styleIcon.male[vote.style_icon_male] || 0) + 1
+      votes.styleIcon.female[vote.style_icon_female] = (votes.styleIcon.female[vote.style_icon_female] || 0) + 1
+      votes.persona.male[vote.persona_male] = (votes.persona.male[vote.persona_male] || 0) + 1
+      votes.persona.female[vote.persona_female] = (votes.persona.female[vote.persona_female] || 0) + 1
+      votes.artist.male[vote.artist_male] = (votes.artist.male[vote.artist_male] || 0) + 1
+      votes.artist.female[vote.artist_female] = (votes.artist.female[vote.artist_female] || 0) + 1
+      return votes
+    }, {
+      risingStar: {},
+      sportsIcon: {},
+      face: {male: {}, female: {}},
+      styleIcon: {male: {}, female: {}},
+      persona: {male: {}, female: {}},
+      artist: {male: {}, female: {}}
+    }))
   })
 })

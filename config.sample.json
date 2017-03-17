@@ -1,12 +1,15 @@
 {
+  "server": {
+    "key": "<key>",
+    "cert": "<cert>",
+    "port": 8000
+  },
   "connection": {
     "host": "<host>",
     "user": "<user>",
     "password": "<password>",
     "database": "<database>"
   },
-  "app": {
-    "port": 8000
-  },
-  "secret": "<secret>"
+  "secret": "<secret>",
+  "bypassLogin": false
 }
