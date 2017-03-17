@@ -2,7 +2,7 @@
   "server": {
     "key": "<key>",
     "cert": "<cert>",
-    "port": 8000
+    "port": 8080
   },
   "connection": {
     "host": "<host>",
